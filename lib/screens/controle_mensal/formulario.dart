@@ -13,9 +13,10 @@ class FormularioControleMensal extends StatefulWidget {
 class FormularioControleMensalState extends State<FormularioControleMensal> {
   final _formKey = GlobalKey<FormState>();
 
-  double _aInvestir = 0;
+  double _aInvestir;
 
   final TextEditingController entradaController = new TextEditingController();
+  final TextEditingController aInvestirController = new TextEditingController();
 
   List<String> _meses = <String>[
     '',
@@ -83,29 +84,44 @@ class FormularioControleMensalState extends State<FormularioControleMensal> {
                 decoration: const InputDecoration(
                   labelText: 'Entrada',
                 ),
-                validator: _calculaMinimoInvestido,
                 controller: entradaController,
                 keyboardType: TextInputType.number,
+                onChanged: _calculaMinimoInvestido,
                 inputFormatters: [
                   WhitelistingTextInputFormatter.digitsOnly,
                 ],
               ),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Investido',
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  WhitelistingTextInputFormatter.digitsOnly,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Flexible(
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Investido',
+                      ),
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        WhitelistingTextInputFormatter.digitsOnly,
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    child: Column(
+                      children: <Widget>[
+                        Text('Mínimo a investir: '),
+                        Text('$_aInvestir'),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-              new Text('Mínimo a ser investido = $_aInvestir'),
               Container(
-                  padding: const EdgeInsets.only(left: 40.0, top: 20.0),
-                  child: RaisedButton(
-                    child: const Text('Submit'),
-                    onPressed: null,
-                  )),
+                padding: const EdgeInsets.only(left: 40.0, top: 20.0),
+                child: RaisedButton(
+                  child: const Text('Submit'),
+                  onPressed: null,
+                ),
+              ),
             ],
           ),
         ),
@@ -115,8 +131,16 @@ class FormularioControleMensalState extends State<FormularioControleMensal> {
 
   String _calculaMinimoInvestido(String entrada) {
     print('$entrada');
-    final double entradaParse = double.tryParse(entrada);
-    _aInvestir = entradaParse * 0.30;
-    return null;
+    if (entrada != null && entrada != '') {
+      final double entradaParse = double.tryParse(entrada);
+
+      setState(() {
+        _aInvestir = entradaParse * 0.30;
+        aInvestirController.text = _aInvestir.toString();
+      });
+    } else {
+      _aInvestir = 0;
+    }
+    return '';
   }
 }
