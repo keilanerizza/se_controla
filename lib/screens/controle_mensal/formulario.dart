@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:se_controla/components/TextFieldHint.dart';
 
 class FormularioControleMensal extends StatefulWidget {
   FormularioControleMensal({Key key}) : super(key: key);
@@ -14,9 +15,11 @@ class FormularioControleMensalState extends State<FormularioControleMensal> {
   final _formKey = GlobalKey<FormState>();
 
   double _aInvestir;
+  double _aInvestirEssencial;
+  double _aInvestirEducacao;
+  double _aInvestirExtra;
 
   final TextEditingController entradaController = new TextEditingController();
-  final TextEditingController aInvestirController = new TextEditingController();
 
   List<String> _meses = <String>[
     '',
@@ -91,29 +94,21 @@ class FormularioControleMensalState extends State<FormularioControleMensal> {
                   WhitelistingTextInputFormatter.digitsOnly,
                 ],
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Flexible(
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Investido',
-                      ),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        WhitelistingTextInputFormatter.digitsOnly,
-                      ],
-                    ),
-                  ),
-                  Flexible(
-                    child: Column(
-                      children: <Widget>[
-                        Text('Mínimo a investir: '),
-                        Text('$_aInvestir'),
-                      ],
-                    ),
-                  ),
-                ],
+              TextFieldHint(
+                nomeCampo: 'Investido',
+                sugerido: '$_aInvestir',
+              ),
+              TextFieldHint(
+                nomeCampo: 'Essencial',
+                sugerido: '$_aInvestirEssencial',
+              ),
+              TextFieldHint(
+                nomeCampo: 'Educação',
+                sugerido: '$_aInvestirEducacao',
+              ),
+              TextFieldHint(
+                nomeCampo: 'Extra',
+                sugerido: '$_aInvestirExtra',
               ),
               Container(
                 padding: const EdgeInsets.only(left: 40.0, top: 20.0),
@@ -135,8 +130,11 @@ class FormularioControleMensalState extends State<FormularioControleMensal> {
       final double entradaParse = double.tryParse(entrada);
 
       setState(() {
-        _aInvestir = entradaParse * 0.30;
-        aInvestirController.text = _aInvestir.toString();
+        _aInvestir = (entradaParse * 0.30).roundToDouble();
+        _aInvestirEssencial = (entradaParse * 0.55).roundToDouble();
+        _aInvestirEducacao = (entradaParse * 0.05).roundToDouble();
+        _aInvestirExtra = (entradaParse * 0.10).roundToDouble();
+
       });
     } else {
       _aInvestir = 0;
